@@ -824,11 +824,21 @@
 ]
   </script>
   <script id="app-code">
+    var QUESTION_BANK = [];
     var QUESTIONS = [];
     var state = createInitialState(50);
 
     function createInitialState(count) {
       return { current: 0, answers: Array(count).fill(null), revealed: Array(count).fill(false), submitted: false };
+    }
+
+    function shuffleQuestions(questions, random = Math.random) {
+      const shuffled = questions.slice();
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(random() * (index + 1));
+        [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+      }
+      return shuffled;
     }
 
     function findFirstUnanswered(answers) {
@@ -857,6 +867,7 @@
     }
 
     function startQuiz() {
+      QUESTIONS = shuffleQuestions(QUESTION_BANK);
       state = createInitialState(QUESTIONS.length);
       showOnly('quiz');
       renderQuestion();
@@ -906,7 +917,7 @@
       const question = QUESTIONS[state.current];
       const revealed = state.revealed[state.current];
       el('category').textContent = displayCategory(question.category);
-      el('question-number').textContent = `Item ${String(question.id).padStart(2, '0')}`;
+      el('question-number').textContent = `Item ${String(state.current + 1).padStart(2, '0')}`;
       el('question-title').textContent = question.prompt;
 
       const options = el('options');
@@ -1016,7 +1027,7 @@
         card.className = `review-card${correct ? '' : ' wrong'}`;
         const top = document.createElement('div');
         top.className = 'review-top';
-        top.append(makeText('strong', `Item ${question.id} · ${question.category}`), makeText('span', correct ? 'Correct' : 'Review', correct ? 'correct' : 'incorrect'));
+        top.append(makeText('strong', `Item ${index + 1} · ${question.category}`), makeText('span', correct ? 'Correct' : 'Review', correct ? 'correct' : 'incorrect'));
         card.append(top, makeText('h3', question.prompt));
         const selectedClass = correct ? 'correct' : 'incorrect';
         card.append(makeText('p', `Your answer: ${String.fromCharCode(65 + chosen)}. ${question.options[chosen]}`, selectedClass));
@@ -1040,7 +1051,8 @@
     }
 
     function initialize() {
-      QUESTIONS = JSON.parse(el('question-data').textContent);
+      QUESTION_BANK = JSON.parse(el('question-data').textContent);
+      QUESTIONS = QUESTION_BANK.slice();
       state = createInitialState(QUESTIONS.length);
       el('start-btn').addEventListener('click', startQuiz);
       el('prev-btn').addEventListener('click', () => goToQuestion(state.current - 1));
@@ -1052,7 +1064,7 @@
     }
 
     globalThis.__quizApp = {
-      createInitialState, findFirstUnanswered, calculateScore, performanceBand, displayCategory,
+      createInitialState, shuffleQuestions, findFirstUnanswered, calculateScore, performanceBand, displayCategory,
       startQuiz, selectAnswer, revealAnswer, goToQuestion, renderQuestion, submitQuiz, renderResults, resetQuiz
     };
 

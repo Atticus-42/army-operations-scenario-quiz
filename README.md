@@ -1,13 +1,14 @@
-# Army Operations Mastery Quiz
+# Army Operations Mastery Quiz (moved)
 
-A free, browser-based practice aid for the *Introduction to Army Operations* lesson. Students enter a name, confirm the study warning, and take a 25-question Easy, Medium, or Hard examination at https://atticus-42.github.io/army-operations-scenario-quiz/. Questions are reshuffled on every attempt.
+This quiz now lives in the unified quiz site, built from one shared engine:
 
-The 75 questions are fictional Philippine Army situations built only from the lesson notebook: the constitutional mandate and operational platforms, full spectrum operations, offensive and defensive tasks, support to civil governance, the tenets of Army operations, Army power and the warfighting functions, and the principles of Army operations. The lesson has no numbered slides, so questions carry no `sourceSlides` and the feedback shows no "Lesson reference" line (the field stays optional and is validated whenever a question includes it).
+**https://atticus-42.github.io/quiz-hub/army-operations/**
 
-No login, payment, analytics, cookies, advertising, external fonts, images, scripts or runtime libraries. Answers stay in browser memory. Only the name, difficulty, score and finish time are sent to the class history Google Sheet (tab "Army Operations History", lesson key `armyops`) through `HISTORY_ENDPOINT` in `src/template.html`.
+The repository [Atticus-42/quiz-hub](https://github.com/Atticus-42/quiz-hub) holds the source:
+- the questions: `lessons/`;
+- the engine: `src/engine/template.html`;
+- the build and tests: `scripts/`.
 
-`src/questions/` holds the three banks, `src/template.html` is the page source, and `scripts/build.mjs` produces the self-contained `index.html`. `apps-script/Code.gs` is the shared history web app (one spreadsheet, one tab per lesson). Test gate:
+This repository now only serves a redirect: `index.html` forwards visitors (including any `#fragment`) to the new address.
 
-```sh
-node scripts/build.mjs && node scripts/verify.mjs
-```
+`apps-script/` is kept for reference only. The current class-history script (version 7, with item analysis) is `apps-script/Code.gs` in quiz-hub; deploy that one.
